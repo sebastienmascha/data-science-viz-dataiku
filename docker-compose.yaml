@@ -1,36 +1,30 @@
 version: '3'
 services:
   datatiku:
-      container_name: data_viz_dataiku 
     image: dataiku/dss
     volumes:
-      - app-db-data:/home/dataiku/dss
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dataiku.rule=Host(`dataiku.smascha.ai`)"
-      - "traefik.http.routers.dataiku.entrypoints=websecure"
-      - "traefik.http.routers.dataiku.tls.certresolver=mytlschallenge"
+      - dataiku-data:/home/dataiku/dss
     networks:
       - traefik-public
     deploy:
       placement:
         constraints:
-          - node.labels.${STACK_NAME?Variable not set}.app-db-data == true
+          - node.labels.${STACK_NAME?Variable not set}.dataiku-data == true
       labels:
         - traefik.enable=true
         - traefik.docker.network=traefic-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.rule=Host(`dataiku.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.entrypoints=http
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.rule=Host(`dataiku.${DOMAIN?Variable not set}`)
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.entrypoints=https
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls=true
-        - traefik.http.routers.${STACK_NAME?Variable not set}-pgadmin-https.tls.certresolver=le
-        - traefik.http.services.${STACK_NAME?Variable not set}-pgadmin.loadbalancer.server.port=10000
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-http.rule=Host(`dataiku.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-http.entrypoints=http
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-http.middlewares=${STACK_NAME?Variable not set}-https-redirect
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-https.rule=Host(`dataiku.${DOMAIN?Variable not set}`)
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-https.entrypoints=https
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-https.tls=true
+        - traefik.http.routers.${STACK_NAME?Variable not set}-dataiku-https.tls.certresolver=le
+        - traefik.http.services.${STACK_NAME?Variable not set}-dataiku.loadbalancer.server.port=10000
 
 volumes:
-  app-db-data:
+  dataiku-data:
 
 networks:
   traefik-public:
