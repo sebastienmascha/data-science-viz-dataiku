@@ -1,0 +1,20 @@
+version: '3'
+services:
+  datatiku:
+    container_name: dataiku 
+    image: dataiku/dss
+    ports:
+      - "5001:10000"
+    volumes: 
+      - "$PWD/volume:/home/dataiku/dss"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dataiku.rule=Host(`dataiku.smascha.ai`)"
+      - "traefik.http.routers.dataiku.entrypoints=websecure"
+      - "traefik.http.routers.dataiku.tls.certresolver=mytlschallenge"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
